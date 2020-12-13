@@ -56,16 +56,83 @@ document.addEventListener("DOMContentLoaded", function()  {
           data: data
         })
       })
+      .then(response => response.json())
       .then(function(response) {
         if (response.status !== 200)  {
-          console.log("Error");
+          console.log(response);
         }
         else  {
-          console.log("no error");
+          console.log(response.message); 
         }
       })
+
+      $('#exampleModal').modal('hide');
       return false;
     }
   }
 
+  document.querySelector("#current").onclick = function() {
+    fetch("/current_election")
+    .then(response => response.json())
+    .then(function(response) {
+      console.log(response.data[2])
+      if (response.status === 201)  {
+        var current = document.querySelector("#current_candidates");
+        for (var i = 0; i < response.data.length; i++)  {
+          var input = document.createElement("input");
+          var label = document.createElement("label");
+          label.innerHTML = label.for = input.id = input.value = response.data[i];
+          input.name = "candidate_name";
+          input.type = "radio";
+          current.appendChild(label);
+          current.appendChild(input);
+        }
+      }
+      else  {
+        console.log(response);
+      }
+    });
+  }
+
+
+    document.querySelector("#current_election").onsubmit = function()  {
+      var cands = document.getElementsByName("candidate_name");
+      for (var i = 0; i < cands.length; i++)  {
+        if (cands[i].checked)  {
+          var name = cands[i].value;
+          break;
+        }
+      }
+      console.log(name);
+      fetch("/current_election", {
+        method: "POST",
+        body: JSON.stringify({
+          cand_name: name 
+        })
+      })
+      .then(response => response.json())
+      .then(function(response) {
+        if (response)  {
+          console.log(response.data);
+        }
+        else  {
+          console.log(response.data); 
+        }
+      })
+      $('#current_election').modal('hide');
+      return false;
+    }
+
+  document.querySelector("#completed").onclick = function() {
+    fetch("/completed_election")
+    .then(function(response) {
+      if (response.status === 201)  {
+        console.log(data);
+      }
+      else  {
+        console.log("error");
+      }
+    });
+    $('#completed_election').modal('show')
+  }
 });

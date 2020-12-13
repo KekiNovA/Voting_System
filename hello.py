@@ -30,15 +30,39 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/new_election", methods=["GET", "POST"])
 def new_election():
     if request.method == "POST":
-        print(data)
-        data = request.data
-        date = request["date"]
+        data = json.loads(request.data)["data"]
+        date = data["to"]
+        candidates = []
+        for i in range(1, len(data)):
+            candidates.append(data[f"Candidate_{i}"])
     try:
-        db.execute(f"INSERT")
-        return make_response(jsonify({"message": "Internal server error"}), 201)
-    except:
-        return make_response(jsonify({"message": "Internal server error"}), 401)
+        for cand in set(candidates):
+            db.execute(f"INSERT INTO CANDIDATES (cand_name, VOTES) VALUES (:cand_name, :votes)", {"cand_name": cand, "votes": 0})
+        db.commit()
+        return make_response(jsonify({"message": "Created Success"}), 201)
+    except Exception as e:
+        return make_response(jsonify({"message": "Please try again"}), 401)
     return render_template("index.html")
+
+
+@app.route('/current_election', methods=["GET", "POST"])
+def current_election():
+    if request.method == "POST":
+        cand_name = json.loads(request.data)
+        print(cand_name)
+        cand_name = cand_name["cand_name"]
+        votes = db.execute(f"SELECT votes FROM CANDIDATES WHERE cand_name='{cand_name}';").fetchall()[0][0]
+        votes += 1
+        try:
+            db.execute(f"UPDATE CANDIDATES SET votes={votes} WHERE cand_name='{cand_name}';")
+            db.commit()
+            return make_response(jsonify({"message": "Success"}), 201)
+        except Exception as e:
+            print(e)
+            return jsonify({"message": "try again", "status": 401})
+    data = db.execute("SELECT cand_name FROM CANDIDATES").fetchall()
+    data = [i[0] for i in data]
+    return make_response(jsonify({"data": data, "status": 201}), 201)
 
 
 # Remove redundant code!
@@ -82,6 +106,12 @@ def register():
         return render_template("register.html", msg="Please try again")
     return render_template("register.html")
 
+
+@app.route("/remove")
+def remove():
+    db.execute("DELETE FROM CANDIDATES;")
+    db.commit()
+    return redirect('/')
 
 def check_existing_user(username):
     try: 

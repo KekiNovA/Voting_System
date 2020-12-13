@@ -6,7 +6,11 @@
 
 {% block body %}
 
-  <div class="card text-center" style="width: 18rem;">
+
+
+
+<div class="card-deck" style="margin: 20px;">
+  <div class="card text-center" style="width: 18rem;max-width: 256px">
     <button class="btn btn-light" data-toggle="modal" data-target="#exampleModal">
     <img class="card-img-top" style="padding: 60px;" src="{{ url_for('static', filename='images/add.svg') }}" alt="Card image cap">
       <div class="card-body">
@@ -14,6 +18,25 @@
       </div>
     </button>
   </div>
+
+  <div class="card text-center" style="width: 18rem;max-width: 256px">
+    <button id="current" class="btn btn-light" data-toggle="modal" data-target="#current_election">
+    <img class="card-img-top" style="padding: 60px;" src="{{ url_for('static', filename='images/exchange.svg') }}" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">Current election</h5>
+      </div>
+    </button>
+  </div>
+
+  <div class="card text-center" style="width: 18rem;max-width: 256px">
+    <button id="completed" class="btn btn-light" data-toggle="modal" data-target="#completed_election">
+    <img class="card-img-top" style="padding: 60px;" src="{{ url_for('static', filename='images/checkmark.svg') }}" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">Completed election</h5>
+      </div>
+    </button>
+  </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -40,20 +63,69 @@
       <label for="exampleFormControlSelect2">Enter name of Candidate 2</label>
         <input class="form-control candidates_name" type="text" id="Candidate_2" required>
       <br>
-      <div id="extra_candidates">
-        
+      
       </div>
+        <div id="extra_candidates">
+          
+        </div>
       <button class="btn" id="add_candidate" style="background-color: #fffff;"><img height=32 src="{{ url_for('static', filename='images/plus.svg') }}"></button>
       <button class="btn" id="remove_candidate" style="background-color: #fffff;"><img height=32 src="{{ url_for('static', filename='images/minus.svg') }}"></button>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Go back</button>
-        <button type="submit" class="btn btn-primary">Conduct</button>
+        <button id="submit" type="submit" class="btn btn-primary">Conduct</button>
       </div>
       </form>
     </div>
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="current_election" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Election</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="current_election" id="current_election" method="POST" style="padding: 15px;">
+      
+        <div id="current_candidates" style="margin: 20px;">
+           
+        </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Go back</button>
+        <button id="submit" type="submit" class="btn btn-primary">Conduct</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="completed_election" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Election</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+        <h3 style="margin: 20px">No elections</h3>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Go back</button>
+        <button id="submit" type="submit" class="btn btn-primary">Conduct</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
